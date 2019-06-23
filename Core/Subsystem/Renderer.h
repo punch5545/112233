@@ -16,8 +16,6 @@ public:
 
     const bool Initialize() override;
 
-	auto Get() -> Renderer* { return this; }
-
     auto GetFrameResourceView() const -> ID3D11ShaderResourceView*;
     auto GetCamera() const -> class Camera*;
 
@@ -27,7 +25,11 @@ public:
     void AcquireRenderables(class Scene* scene);
     void ClearRenderables();
 
-    void Render();
+	void SetRasterizerState(bool bShowWireframe) { if(this->bShowWireframe != bShowWireframe) this->bShowWireframe = bShowWireframe; }
+	void SetBlendState(bool bShowBackground) { if(this->bShowBackground != bShowBackground) this->bShowBackground = bShowBackground; }
+
+	void Render();
+
 private:
     void PassMain();
 
@@ -38,9 +40,11 @@ private:
     void CreateShaders();
     void CreateConstantBuffer();
     void CreateSamplerStates();
-    void CreateRasterizerStates();
-	void CreateBlendState(bool bEnable);
+	void CreateRasterizerStates();
+	void CreateBlendStates();
+
     void UpdateGlobalBuffer(const uint& width, const uint& height, const Matrix& wvp = Matrix::Identity);
+
 
 private:
     float camera_near;
@@ -51,6 +55,9 @@ private:
     Matrix camera_view_proj_inverse;
     Vector3 camera_position;
     Vector2 resolution;
+
+	bool bShowWireframe;
+	bool bShowBackground;
 
     class Camera* scene_camera;
     std::shared_ptr<class Camera> editor_camera;
@@ -66,9 +73,10 @@ private:
 #pragma endregion
 #pragma region Shader
     std::shared_ptr<class Shader> vs_standard;
+    std::shared_ptr<class Shader> vs_animation;
 #pragma endregion
 #pragma region ConstantBuffer
-    std::shared_ptr<class ConstantBuffer> global_buffer;
+    std::shared_ptr<class ConstantBuffer> global_buffer;  
 #pragma endregion
 #pragma region SamplerState
     std::shared_ptr<class SamplerState> point_clamp;
@@ -76,8 +84,6 @@ private:
     std::shared_ptr<class SamplerState> bilinear_wrap;
     std::shared_ptr<class SamplerState> trilinear_clamp;
 #pragma endregion
-public:
-
 #pragma region RasterizerState
     std::shared_ptr<class RasterizerState> cull_none_solid;
     std::shared_ptr<class RasterizerState> cull_back_solid;
@@ -86,14 +92,9 @@ public:
     std::shared_ptr<class RasterizerState> cull_back_wireframe;
     std::shared_ptr<class RasterizerState> cull_front_wireframe;
 #pragma endregion
+
 #pragma region BlendState
 	std::shared_ptr<class BlendState> blend_enable;
 	std::shared_ptr<class BlendState> blend_disable;
 #pragma endregion
-
-	void SetRasterizerState(bool bCheck);
-	void SetBlendState(bool bCheck);
-
-	bool bShowWireframe;
-	bool bShowBackground;
 };

@@ -38,3 +38,11 @@ struct TransformData
     Matrix wvp_current;
     Matrix wvp_previous;
 };
+
+struct AnimationData
+{
+    Vector2 texture_size;
+    Vector2 sprite_offset;
+    Vector2 sprite_size;
+    float Padding[2];
+};

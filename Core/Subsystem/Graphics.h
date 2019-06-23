@@ -13,16 +13,17 @@ public:
     auto GetDeviceContext() const -> ID3D11DeviceContext* { return deviceContext; }
     auto GetSwapChain() const -> IDXGISwapChain* { return swapChain; }
 
-	void Resize(const uint& width, const uint& height);
-	void SetViewport(const uint& width, const uint& height);
+    void Resize(const uint& width, const uint& height);
+    void SetViewport(const uint& width, const uint& height);
 
     void BeginScene();
     void EndScene();
 
 private:
     void CreateSwapChain();
-	void CreateRenderTargetView();
-	void DeleteSurface();
+    void CreateRenderTargetView();
+
+    void DeleteSurface();
 
 private:
     ID3D11Device* device;

@@ -11,16 +11,20 @@
 Renderer::Renderer(Context * context)
     : ISubsystem(context)  
     , scene_camera(nullptr)
+	, bShowBackground(false)
+	, bShowWireframe(true)
 {
     EventSystem::Get().Subscibe(EventType::Render, EVENT_HANDLER(Render));
 
     resolution.x = Settings::Get().GetWidth();
     resolution.y = Settings::Get().GetHeight();
+
 }
 
 const bool Renderer::Initialize()
 {
     editor_camera = std::make_shared<Camera>(context);
+
     command_list = std::make_shared<CommandList>(context);
 
     CreateRenderTextures();
@@ -28,7 +32,7 @@ const bool Renderer::Initialize()
     CreateConstantBuffer();
     CreateSamplerStates();
 	CreateRasterizerStates();
-	CreateBlendState(true);
+	CreateBlendStates();
 
     return true;
 }
@@ -133,6 +137,10 @@ void Renderer::CreateShaders()
 {
     vs_standard = std::make_shared<Shader>(context);
     vs_standard->AddShader<VertexShader>("../../_Assets/Shader/Standard.hlsl");
+
+    vs_animation = std::make_shared<Shader>(context);
+    vs_animation->AddDefine("ANIMATION");
+    vs_animation->AddShader<VertexShader>("../../_Assets/Shader/Standard.hlsl");
 }
 
 void Renderer::CreateConstantBuffer()
@@ -159,31 +167,32 @@ void Renderer::CreateSamplerStates()
 void Renderer::CreateRasterizerStates()
 {
     cull_none_solid = std::make_shared<RasterizerState>(context);
-	cull_none_solid->Create(D3D11_CULL_NONE, D3D11_FILL_SOLID);
-	
-	cull_back_solid = std::make_shared<RasterizerState>(context);
-	cull_back_solid->Create(D3D11_CULL_BACK, D3D11_FILL_SOLID);
-	
-	cull_front_solid = std::make_shared<RasterizerState>(context);
-	cull_front_solid->Create(D3D11_CULL_FRONT, D3D11_FILL_SOLID);
-	
-	cull_none_wireframe = std::make_shared<RasterizerState>(context);
-	cull_none_wireframe->Create(D3D11_CULL_NONE, D3D11_FILL_WIREFRAME);
-	
-	cull_back_wireframe = std::make_shared<RasterizerState>(context);
-	cull_back_wireframe->Create(D3D11_CULL_BACK, D3D11_FILL_WIREFRAME);
-	
-	cull_front_wireframe = std::make_shared<RasterizerState>(context);
-	cull_front_wireframe->Create(D3D11_CULL_FRONT, D3D11_FILL_WIREFRAME);
+    cull_none_solid->Create(D3D11_CULL_NONE, D3D11_FILL_SOLID);
 
+    cull_back_solid = std::make_shared<RasterizerState>(context);
+    cull_back_solid->Create(D3D11_CULL_BACK, D3D11_FILL_SOLID);
+
+    cull_front_solid = std::make_shared<RasterizerState>(context);
+    cull_front_solid->Create(D3D11_CULL_FRONT, D3D11_FILL_SOLID);
+
+    cull_none_wireframe = std::make_shared<RasterizerState>(context);
+    cull_none_wireframe->Create(D3D11_CULL_NONE, D3D11_FILL_WIREFRAME);
+
+    cull_back_wireframe = std::make_shared<RasterizerState>(context);
+    cull_back_wireframe->Create(D3D11_CULL_BACK, D3D11_FILL_WIREFRAME);
+
+    cull_front_wireframe = std::make_shared<RasterizerState>(context);
+    cull_front_wireframe->Create(D3D11_CULL_FRONT, D3D11_FILL_WIREFRAME);
 }
 
-void Renderer::CreateBlendState(bool bEnable)
+void Renderer::CreateBlendStates()
 {
 	blend_enable = std::make_shared<BlendState>(context);
-	blend_enable->Create(bEnable);
-}
+	blend_enable->Create(true);
 
+	blend_disable = std::make_shared<BlendState>(context);
+	blend_enable->Create(false);
+}
 void Renderer::UpdateGlobalBuffer(const uint & width, const uint & height, const Matrix & wvp)
 {    
     auto data = global_buffer->Map<GlobalData>();
@@ -204,17 +213,4 @@ void Renderer::UpdateGlobalBuffer(const uint & width, const uint & height, const
     data->resolution                = Vector2(static_cast<float>(width), static_cast<float>(height));
 
     global_buffer->Unmap();
-}
-
-void Renderer::SetRasterizerState(bool bCheck)
-{
-	if (bShowWireframe != bCheck) 
-	{
-		bShowWireframe = bCheck;
-	}
-}
-
-void Renderer::SetBlendState(bool bCheck)
-{
-	blend_enable->Create(!bCheck);
 }

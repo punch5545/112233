@@ -45,5 +45,5 @@ void BlendState::Clear()
 
 void BlendState::BindPipeline()
 {
-	graphics->GetDeviceContext()->OMSetBlendState(state,nullptr,sample_mask);
+	graphics->GetDeviceContext()->OMSetBlendState(state, nullptr, sample_mask);
 }

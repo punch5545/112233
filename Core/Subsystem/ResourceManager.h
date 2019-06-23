@@ -10,7 +10,7 @@ public:
 
     const bool Initialize() override;
 
-	auto GetTextureImporter() const -> class TextureImporter* { return this->texture_importer.get(); }
+    auto GetTextureImporter() const -> class TextureImporter* { return texture_importer.get(); }
 
     template <typename T> auto Load(const std::string& path) -> T*;
     template <typename T> auto GetResourceFromName(const std::string& name) -> T*;
@@ -21,7 +21,7 @@ public:
     void RegisterResourceDirectory(const ResourceType& type, const std::string& directory);
 
 private:
-	std::shared_ptr<class TextureImporter> texture_importer;
+    std::shared_ptr<class TextureImporter> texture_importer;
 
     typedef std::vector<IResource*> ResourceGroup;
     std::map<ResourceType, ResourceGroup> resourceGroups;

@@ -21,7 +21,8 @@ ResourceManager::~ResourceManager()
 
 const bool ResourceManager::Initialize()
 {
-	texture_importer = std::make_shared<TextureImporter>(context);
+    texture_importer = std::make_shared<TextureImporter>(context);
+
     RegisterResourceDirectory(ResourceType::Audio,      "../../_Assets/Audio/");
     RegisterResourceDirectory(ResourceType::Animation,  "../../_Assets/Animation/");
     RegisterResourceDirectory(ResourceType::Texture,    "../../_Assets/Texture/");

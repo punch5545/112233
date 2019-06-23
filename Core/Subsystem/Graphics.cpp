@@ -101,31 +101,30 @@ const bool Graphics::Initialize()
 
 void Graphics::Resize(const uint & width, const uint & height)
 {
-	DeleteSurface();
-	{
-		auto hr = swapChain->ResizeBuffers
-		(
-			0,
-			width,
-			height,
-			DXGI_FORMAT_UNKNOWN, //infrastructure
-			0
-		);
-		assert(SUCCEEDED(hr));
-	}
-	CreateRenderTargetView();
-	SetViewport(width, height);
-
+    DeleteSurface();
+    {
+        auto hr = swapChain->ResizeBuffers
+        (
+            0,
+            width,
+            height,
+            DXGI_FORMAT_UNKNOWN, //infrastructure
+            0
+        );
+        assert(SUCCEEDED(hr));
+    }
+    CreateRenderTargetView();
+    SetViewport(width, height);
 }
 
 void Graphics::SetViewport(const uint & width, const uint & height)
 {
-	viewport.TopLeftX = 0.0f;
-	viewport.TopLeftY = 0.0f;
-	viewport.Width = static_cast<float>(width);
-	viewport.Height = static_cast<float>(height);
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
+    viewport.TopLeftX   = 0.0f;
+    viewport.TopLeftY   = 0.0f;
+    viewport.Width      = static_cast<float>(width);
+    viewport.Height     = static_cast<float>(height);
+    viewport.MinDepth   = 0.0f;
+    viewport.MaxDepth   = 1.0f;
 }
 
 void Graphics::BeginScene()
@@ -186,27 +185,27 @@ void Graphics::CreateSwapChain()
 
 void Graphics::CreateRenderTargetView()
 {
-	ID3D11Texture2D* backBuffer = nullptr;
-	auto hr = swapChain->GetBuffer
-	(
-		0,
-		__uuidof(ID3D11Texture2D),
-		reinterpret_cast<void**>(&backBuffer)
-	);
-	assert(SUCCEEDED(hr));
+    ID3D11Texture2D* backBuffer = nullptr;
+    auto hr = swapChain->GetBuffer
+    (
+        0,
+        __uuidof(ID3D11Texture2D),
+        reinterpret_cast<void**>(&backBuffer)
+    );
+    assert(SUCCEEDED(hr));
 
-	hr = device->CreateRenderTargetView
-	(
-		backBuffer,
-		nullptr,
-		&rtv
-	);
-	assert(SUCCEEDED(hr));
+    hr = device->CreateRenderTargetView
+    (
+        backBuffer,
+        nullptr,
+        &rtv
+    );
+    assert(SUCCEEDED(hr));
 
-	SAFE_RELEASE(backBuffer);
+    SAFE_RELEASE(backBuffer);
 }
 
 void Graphics::DeleteSurface()
 {
-	SAFE_RELEASE(rtv);
+    SAFE_RELEASE(rtv);
 }
